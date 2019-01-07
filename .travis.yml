@@ -13,3 +13,26 @@ before_install:
 # Run Unit Test and Integration Tests
 script:
   - mvn verify
+
+# Cache the .m2 folder to prevent redownloading dependencies on each build
+cache:
+  directories:
+  - "$HOME/.m2/repository"
+
+
+# Environment variables are strings (double quotes)
+# Example:
+# - secure: "DpR1th9rZvLMX0......"
+env:
+  global:
+    - secure: IvHpP8T/DpnyizxgAO9hkY3yFn+36nbL3RwXYDi3tOJVWB2k6aRm+5MYt62Pi8Lr7Z8Llgyt44xf4c6GogpAloq9ypPdtgqH7l69mLBCiBlO6D6zPs+fTYPJiG9KSrKpcWeY2E3TopLIEhYTGSJ+71fP7RP3+mpJBChesAG4fnj4BNM3hjGL9ZH1Mm43W/MDV9WaJ3tBqrjyrtNzvQHc4RxiuUwl4AfPe8TRHVL32NxR04q+IYm+DS6/Md7lr6cyxtAHpn9itRyqFxhL4pez259FJlHm5FhDnmsHM244EBmD2R+urEc78GJ03FIfnNjXKE22b3ypt65sD+VR4fc3AsI95rM+jNZ8PzSK91nrp9sVbZK5UDNJ4IePbmAv6ejHD2hNZqBgNg5pTqkmBNa6d/HzQtoRmKsdFQM8jxz8tXWoiubA6qyWIo/eycEnbQN3KhUyhvjQJYvqi0uAeDn/FC1pb5ANJ5yOOQ4Z+sytHK381DluifQ50nZ8bvySURfODmBebup7PVQiBBg5pRR9OJ9/aWdC57m6anftKIKjnXidU/MvwTvxw6JeG1JEXS8yIqEtPBx3fIf70w4YsiiY37dn8+8RfaoexMVupimuQ49bJSE0KauQK2+aeP0KaALl1hFAJgjQNaiIA/MSmlRVrjzx8LnDFQMJLG2NjFBIse0=
+
+
+# The pipe (|) is useful to create multiline scripts
+script:
+  - |
+    mvn clean install sonar:sonar \
+	-Dsonar.projectKey=MatthieuPavageau_sample-application-students \
+	-Dsonar.organization=matthieupavageau-github \
+	-Dsonar.host.url=https://sonarcloud.io \
+        -Dsonar.login=66787ebb2b8b88345bc20e8d99f15af8b8c00a16

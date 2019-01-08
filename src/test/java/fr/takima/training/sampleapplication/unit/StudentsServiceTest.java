@@ -40,7 +40,7 @@ public class StudentsServiceTest {
         MockitoAnnotations.initMocks(this);
     }
 
-
+    /*
     @Test
     public void testGetStudentById() {
         when(studentDAO.getById(1L)).thenReturn(student);
@@ -60,7 +60,7 @@ public class StudentsServiceTest {
 
         assertEquals(students, studentService.getStudentsByDepartmentName("DepartmentTest"));
     }
-
+    */
     @Test
     public void testGetStudentsByDepartmentNameWithNullValue() {
         assertThrows(IllegalArgumentException.class, () -> studentService.getStudentsByDepartmentName(null));

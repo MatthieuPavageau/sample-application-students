@@ -21,6 +21,14 @@ script:
 - docker build -t $IMAGE_NAME:$TRAVIS_COMMIT .
 - docker tag $IMAGE_NAME:$TRAVIS_COMMIT $IMAGE_NAME:$TAG
 - docker push $IMAGE_NAME:$TAG
+# Run Unit Test and Integration Tests, and make SonarCloud analysis
+script:
+  - |
+    mvn clean install sonar:sonar \
+    -Dsonar.projectKey=takima-training_sample-application \
+    -Dsonar.organization=takima-training \
+    -Dsonar.host.url=https://sonarcloud.io \
+    -Dsonar.login=$SONAR_TOKEN
 cache:
   directories:
   - "$HOME/.m2/repository"

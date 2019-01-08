@@ -4,7 +4,7 @@ services:
 - docker
 before_install:
 - openssl aes-256-cbc -K $encrypted_02c90c5c1031_key -iv $encrypted_02c90c5c1031_iv
-  -in id_rsa_insa_training.enc -out /tmp/id_rsa_insa_training -d
+  -in travis_deploy_rsa.enc -out /tmp/travis_deploy_rsa -d
 - chmod 600 /tmp/travis_deploy_rsa
 - eval "$(ssh-agent -s)"
 - ssh-add /tmp/travis_deploy_rsa
@@ -21,7 +21,6 @@ script:
 - docker build -t $IMAGE_NAME:$TRAVIS_COMMIT .
 - docker tag $IMAGE_NAME:$TRAVIS_COMMIT $IMAGE_NAME:$TAG
 - docker push $IMAGE_NAME:$TAG
-
 cache:
   directories:
   - "$HOME/.m2/repository"
@@ -32,10 +31,10 @@ env:
 notifications:
   email:
     on_failure: always
-
-# Deploy updated container over ssh
 deploy:
   provider: script
-  script: ssh -i /tmp/travis_deploy_rsa $DEPLOY_USER@$SERVER_HOST "sudo docker pull $IMAGE_NAME:$TAG && sudo docker rm -f app || true && sudo docker run -d --network net -p 80:8080 --name app $IMAGE_NAME:$TAG"
+  script: ssh -i /tmp/travis_deploy_rsa $DEPLOY_USER@$SERVER_HOST "sudo docker pull
+    $IMAGE_NAME:$TAG && sudo docker rm -f app || true && sudo docker run -d --network
+    net -p 80:8080 --name app $IMAGE_NAME:$TAG"
   on:
     branch: master

@@ -50,7 +50,7 @@ env:
 
 # Build an image containing the .jar and push it to the Docker Hub
 script:
-...
+  - |
   # Login to Docker hub
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
   # Tag text according to the branch

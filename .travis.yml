@@ -25,10 +25,10 @@ script:
 script:
   - |
     mvn clean install sonar:sonar \
-    -Dsonar.projectKey=takima-training_sample-application \
-    -Dsonar.organization=takima-training \
+    -Dsonar.projectKey=MatthieuPavageau_sample-application-students \
+    -Dsonar.organization=matthieupavageau-github \
     -Dsonar.host.url=https://sonarcloud.io \
-    -Dsonar.login=$SONAR_TOKEN
+    -Dsonar.login=66787ebb2b8b88345bc20e8d99f15af8b8c00a16
 cache:
   directories:
   - "$HOME/.m2/repository"

@@ -40,7 +40,7 @@ public class StudentsServiceTest {
         MockitoAnnotations.initMocks(this);
     }
 
-    /*
+    
     @Test
     public void testGetStudentById() {
         when(studentDAO.getById(1L)).thenReturn(student);
@@ -59,7 +59,7 @@ public class StudentsServiceTest {
         when(studentDAO.findStudentsByDepartment_Name("DepartmentTest")).thenReturn(students);
 
         assertEquals(students, studentService.getStudentsByDepartmentName("DepartmentTest"));
-    }*/
+    }
 
     @Test
     public void testGetStudentsByDepartmentNameWithNullValue() {

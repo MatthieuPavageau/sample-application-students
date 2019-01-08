@@ -1,65 +1,30 @@
 language: java
 jdk: oraclejdk8
-
-# Define the services to use
 services:
-  - docker
-
+- docker
 before_install:
-  - sudo service mysql stop
-  - docker pull takimatraining/devops-training-db
-  - docker run -d -p 127.0.0.1:3306:3306 takimatraining/devops-training-db
-
-# Run Unit Test and Integration Tests
+- openssl aes-256-cbc -K $encrypted_02c90c5c1031_key -iv $encrypted_02c90c5c1031_iv
+  -in id_rsa_insa_training.enc -out ~\/.ssh/id_rsa_insa_training/id_rsa_insa_training
+  -d
+- sudo service mysql stop
+- docker pull takimatraining/devops-training-db
+- docker run -d -p 127.0.0.1:3306:3306 takimatraining/devops-training-db
 script:
-  - mvn verify
-
-# Cache the .m2 folder to prevent redownloading dependencies on each build
+- ''
+- docker login -u $DOCKER_USER -p $DOCKER_PASS
+- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH;
+  fi`
+- export IMAGE_NAME=$DOCKER_USER/sample-application
+- docker build -t $IMAGE_NAME:$TRAVIS_COMMIT .
+- docker tag $IMAGE_NAME:$TRAVIS_COMMIT $IMAGE_NAME:$TAG
+- docker push $IMAGE_NAME:$TAG
 cache:
   directories:
   - "$HOME/.m2/repository"
-
-
-# Environment variables are strings (double quotes)
-# Example:
-# - secure: "DpR1th9rZvLMX0......"
 env:
   global:
-    - secure: IvHpP8T/DpnyizxgAO9hkY3yFn+36nbL3RwXYDi3tOJVWB2k6aRm+5MYt62Pi8Lr7Z8Llgyt44xf4c6GogpAloq9ypPdtgqH7l69mLBCiBlO6D6zPs+fTYPJiG9KSrKpcWeY2E3TopLIEhYTGSJ+71fP7RP3+mpJBChesAG4fnj4BNM3hjGL9ZH1Mm43W/MDV9WaJ3tBqrjyrtNzvQHc4RxiuUwl4AfPe8TRHVL32NxR04q+IYm+DS6/Md7lr6cyxtAHpn9itRyqFxhL4pez259FJlHm5FhDnmsHM244EBmD2R+urEc78GJ03FIfnNjXKE22b3ypt65sD+VR4fc3AsI95rM+jNZ8PzSK91nrp9sVbZK5UDNJ4IePbmAv6ejHD2hNZqBgNg5pTqkmBNa6d/HzQtoRmKsdFQM8jxz8tXWoiubA6qyWIo/eycEnbQN3KhUyhvjQJYvqi0uAeDn/FC1pb5ANJ5yOOQ4Z+sytHK381DluifQ50nZ8bvySURfODmBebup7PVQiBBg5pRR9OJ9/aWdC57m6anftKIKjnXidU/MvwTvxw6JeG1JEXS8yIqEtPBx3fIf70w4YsiiY37dn8+8RfaoexMVupimuQ49bJSE0KauQK2+aeP0KaALl1hFAJgjQNaiIA/MSmlRVrjzx8LnDFQMJLG2NjFBIse0=
-
-
-# The pipe (|) is useful to create multiline scripts
-script:
-  - |
-    mvn clean install sonar:sonar \
-    -Dsonar.projectKey=MatthieuPavageau_sample-application-students \
-    -Dsonar.organization=matthieupavageau-github \
-    -Dsonar.host.url=https://sonarcloud.io \
-    -Dsonar.login=66787ebb2b8b88345bc20e8d99f15af8b8c00a16
-
-# Send an email to the commiter if the pipeline failed at some point
+  - secure: swXFxocl84LW+BqaaDWXFrpbCtgOtRttzRfWjflXOIQmdDAbHfTSl+3Q+prdyD7bBdRbdmyjgPDtaocddhPSZ8e6GdSRjN05PkYSDHuLbQ/HxffWaVcEHE8hM9ZYTB0Vwilde52vBskS68B8TK0Aa0D5fgtfmaQiv89caS5CJc+SPK7AC0WPwOIt/VLtbS7kjouQM8c5SjDMvWPRAhH79Gyyi82Bvl2MXLE8X0vwX4zMiTIoQU/YRjYGw6PZl3YISgIExJRp54KXKS24cq/5jcW/8DeGzV0dLLITM3+kCyeITuPQFRWJzZ0YMGJNxKmTg8bzpCs5ZhIguOac/rhI6QOclfJZtTCdKRH7Yxt2g6W9KHGw7+kBz0q7pFX98S/0pWa5nglmafnVqp1mosGOND5XUDoLTEB1GNJDY6XN6LdzepItAti6W5MVuXf1/PpoUu2+qRQiw65qif1X+Tmrrhexz09FrXjBsa2jwsHKuKyCUn+lSu+3rKc2WM+bonP42mP7epPGC12nThqYz4510mN0DNHiqGbGGHSBCr3YlVMDJ+2eKkVfoubTkBrigbrpCcJh+65rAYz61NWgYmZO524K9JC3U/fjz24/AajAe/+j6y88NP3TmR9yftkU7UbzXb9JQprWfUl+9xirZuKLvJQQgKy/7SWzuK1gr4C+700=
+  - secure: duDX3Ta3LrmP4P29kbRraDR67EZezKNmwH6KR3dW9DJoiW5p+8e/cP0WalWZX8/qvMuoSHshKQjxtKqU10TCBD7kd5muGEW+ZOR3p5BsOiPssj+XkOHfl1mf+NQAlJ1Jq8xPTc7xPHL3lrCx8UPe5udUfM/9U7860N0OwuJGEPkvftSJlaqenIAE7unMFMe9qCZe1l7n/+SQyF8OmrLf6KT48fyF7B+I1VFFwyVOJHRWzE7hIECFgG3yfnTWe1L2TWeprLkgB+yB9R4/ErA1AATgRiHcAT3kT11/oDHTr+ODyF6z8P+E/RswLL1VuSyY4Lm9Thanv7OQyM1JxFeUH9RwS8nm7vddmG/CVh8wXdUP0Z4lCMM6ZD6z+XPUuioLuTan4dMIihpaCbAzzPx0u98icNw6uSfsOdp4zv8phHZov8Kf1gpMWSTq2QXNVCvb10LhUI+7xE9UvyupjWorHuV9Z5FbGrAl7nHRnZnSAFfRScQ+AjtzaqI0x8ISvBeR8wYcrFx6wTYzvT16rPAWWMWFTk5gGgC3882kMS2WEGUoMNfxD08QJfcdfPC5sag/r3jNt/VlqvnJYPGfCsnvvEQEVi2Ek316qnxcEiNxvdDaKvYAHa3Xg8SGNmiKAnDCqwxCX9SV3dGU8oD7ccmCqNVLG7JVIVefMvTODV2MFj8=
 notifications:
   email:
     on_failure: always
-
-env:
-  global:
-    # [...] other tokens
-    - secure: "swXFxocl84LW+BqaaDWXFrpbCtgOtRttzRfWjflXOIQmdDAbHfTSl+3Q+prdyD7bBdRbdmyjgPDtaocddhPSZ8e6GdSRjN05PkYSDHuLbQ/HxffWaVcEHE8hM9ZYTB0Vwilde52vBskS68B8TK0Aa0D5fgtfmaQiv89caS5CJc+SPK7AC0WPwOIt/VLtbS7kjouQM8c5SjDMvWPRAhH79Gyyi82Bvl2MXLE8X0vwX4zMiTIoQU/YRjYGw6PZl3YISgIExJRp54KXKS24cq/5jcW/8DeGzV0dLLITM3+kCyeITuPQFRWJzZ0YMGJNxKmTg8bzpCs5ZhIguOac/rhI6QOclfJZtTCdKRH7Yxt2g6W9KHGw7+kBz0q7pFX98S/0pWa5nglmafnVqp1mosGOND5XUDoLTEB1GNJDY6XN6LdzepItAti6W5MVuXf1/PpoUu2+qRQiw65qif1X+Tmrrhexz09FrXjBsa2jwsHKuKyCUn+lSu+3rKc2WM+bonP42mP7epPGC12nThqYz4510mN0DNHiqGbGGHSBCr3YlVMDJ+2eKkVfoubTkBrigbrpCcJh+65rAYz61NWgYmZO524K9JC3U/fjz24/AajAe/+j6y88NP3TmR9yftkU7UbzXb9JQprWfUl+9xirZuKLvJQQgKy/7SWzuK1gr4C+700="
-    - secure: "duDX3Ta3LrmP4P29kbRraDR67EZezKNmwH6KR3dW9DJoiW5p+8e/cP0WalWZX8/qvMuoSHshKQjxtKqU10TCBD7kd5muGEW+ZOR3p5BsOiPssj+XkOHfl1mf+NQAlJ1Jq8xPTc7xPHL3lrCx8UPe5udUfM/9U7860N0OwuJGEPkvftSJlaqenIAE7unMFMe9qCZe1l7n/+SQyF8OmrLf6KT48fyF7B+I1VFFwyVOJHRWzE7hIECFgG3yfnTWe1L2TWeprLkgB+yB9R4/ErA1AATgRiHcAT3kT11/oDHTr+ODyF6z8P+E/RswLL1VuSyY4Lm9Thanv7OQyM1JxFeUH9RwS8nm7vddmG/CVh8wXdUP0Z4lCMM6ZD6z+XPUuioLuTan4dMIihpaCbAzzPx0u98icNw6uSfsOdp4zv8phHZov8Kf1gpMWSTq2QXNVCvb10LhUI+7xE9UvyupjWorHuV9Z5FbGrAl7nHRnZnSAFfRScQ+AjtzaqI0x8ISvBeR8wYcrFx6wTYzvT16rPAWWMWFTk5gGgC3882kMS2WEGUoMNfxD08QJfcdfPC5sag/r3jNt/VlqvnJYPGfCsnvvEQEVi2Ek316qnxcEiNxvdDaKvYAHa3Xg8SGNmiKAnDCqwxCX9SV3dGU8oD7ccmCqNVLG7JVIVefMvTODV2MFj8="
-
-# Build an image containing the .jar and push it to the Docker Hub
-script:
-  - |
-  # Login to Docker hub
-  - docker login -u $DOCKER_USER -p $DOCKER_PASS
-  # Tag text according to the branch
-  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
-  # Image name
-  - export IMAGE_NAME=$DOCKER_USER/sample-application
-  # Build the image (see Dockerfile) and tag it with the commit ID
-  - docker build -t $IMAGE_NAME:$TRAVIS_COMMIT .
-  # Retag the image with the previously choosen tag
-  - docker tag $IMAGE_NAME:$TRAVIS_COMMIT $IMAGE_NAME:$TAG
-  # Push the tagged image to Docker Hub
-  - docker push $IMAGE_NAME:$TAG
